@@ -3,19 +3,20 @@
 #pip install wikipedia
 #pipwin install pyaudio
 #pip install schedule
+#pip install psutil
+
 #import neccassary modules
 import os
 import speech_recognition as sr
 from gtts import gTTS
-import wikipedia
-import calendar
 import random
 from time import ctime
 import playsound
-import sched
-from datetime import datetime
 import time as time_module
 import webbrowser
+import time
+import psutil
+
 
 #Start listening from microphone
 def RecordAudio(ask = False):
@@ -29,13 +30,11 @@ def RecordAudio(ask = False):
     try:
         data = r.recognize_google(audio)
     except sr.UnknownValueError:
-        re = random.choice(["I didn't quite undertsand that, please repeat","I was having a little trouble hearing you, please say that again", "Can you repeat what you just said"])
-        Assistantspeech(re)
+       pass
     except sr.RequestError as e:
         Assistantspeech("My services are currently down, please wait")
     return data
-
-
+    
 def Response(data):
     if "computer" in data:
         if "what time is it" in data:
@@ -67,15 +66,27 @@ def Response(data):
                 f = open(filename+"."+extension, "w+")
                 f.close()
                 Assistantspeech("I have created the file")
-            if "new coding project" in data:
-                Assistantspeech("ok")
-                os.system("code .")
-                Assistantspeech("Done")
+        if "what can you do" in data: 
+            Assistantspeech("My commands are the following printed in the commands.txt file")
+            comms = open(r"C:\Users\pradh\Desktop\commands.txt", "r")
+            read = comms.read()
+            Assistantspeech("My features include, " + read)
+        if "what is my processor usage" in data:
+            cpu = psutil.cpu_percent(interval=1)
+            Assistantspeech("The cpu usage is " + str(cpu) + " percent")
+        if "hello" or "hi" in data:
+            greet = random.choice(["Hello","nice to meet you","Hi"])
+            Assistantspeech(greet)
+    if "what is your name" in data:
+        Assistantspeech("I am your virtual assistant whom is part of your computer")
+        Assistantspeech("You may say the word computer to wake me")
     if "exit" in data:
         exit()
     if "thank you" in data:
         r = random.choice(["You're welcome","My pleasure"])
         Assistantspeech(r)
+    
+
 
 
 def Assistantspeech(string):
