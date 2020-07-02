@@ -4,6 +4,7 @@
 #pipwin install pyaudio
 #pip install schedule
 #pip install psutil
+#pip install secure-smtplib
 
 #import neccassary modules
 import os
@@ -16,7 +17,7 @@ import time as time_module
 import webbrowser
 import time
 import psutil
-
+import smtplib
 
 #Start listening from microphone
 def RecordAudio(ask = False):
@@ -55,6 +56,20 @@ def Response(data):
             url = "https://www." + openobj
             webbrowser.get().open(url)
             Assistantspeech("Here is what I opened ")
+        if "send an email" in data:
+                sender_email = "pradhamk@gmail.com"
+                Assistantspeech("Who is the reciever")
+                rec_email = input("Who is the reciver")
+                Assistantspeech("Please type in the password")
+                passw = input("What is the password: ")
+                Assistantspeech("What is the message you want to send")
+                message = RecordAudio("What is the message")
+                server = smtplib.SMTP('smtp.gmail.com', 587)
+                server.starttls()
+                server.login(sender_email, passw)
+                Assistantspeech("Login successful")
+                server.sendmail(sender_email, rec_email, message)
+                Assistantspeech("Email has been sent to " + rec_email)
         if "create" in data:
             if "new file" in data:
                 Assistantspeech("What is the name of the file")
@@ -66,6 +81,12 @@ def Response(data):
                 f = open(filename+"."+extension, "w+")
                 f.close()
                 Assistantspeech("I have created the file")
+            if "new directory" in data:
+                Assistantspeech("What is the name of the new directory")
+                name = RecordAudio("What do you want to create")
+                os.chdir(r"C:\Users\pradh\Desktop")
+                os.mkdir(name) 
+            Assistantspeech("Directory has been successfully created")
         if "what can you do" in data: 
             Assistantspeech("My commands are the following printed in the commands.txt file")
             comms = open(r"C:\Users\pradh\Desktop\commands.txt", "r")
